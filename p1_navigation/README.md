@@ -4,6 +4,9 @@
 
 # Project 1: Navigation
 
+### Code Description
+The solution to the first project provided here is a minimal modification of the DQN network provided in the Deep Q Network class. The DQN code itself was copied from the github repo unmodified. The code to train the network was modified from Deep_Q_Network_Solution.ipynb.
+
 ### Introduction
 
 For this project, you will train an agent to navigate (and collect bananas!) in a large, square world.  
