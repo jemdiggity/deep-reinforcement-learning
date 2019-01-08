@@ -9,13 +9,14 @@ import torch
 import torch.nn.functional as F
 import torch.optim as optim
 
-BUFFER_SIZE = int(1e6)  # replay buffer size
-BATCH_SIZE = 128        # minibatch size
-GAMMA = 0.99            # discount factor
-TAU = 1e-3*10           # for soft update of target parameters
-LR_ACTOR = 1e-4         # learning rate of the actor
+BUFFER_SIZE = int(1e6)# replay buffer size
+BATCH_SIZE = 128      # minibatch size
+GAMMA = 0.99          # discount factor
+TAU = 1e-3*10          # for soft update of target parameters
+LR_ACTOR = 1e-4       # learning rate of the actor
 LR_CRITIC = 1e-3      # learning rate of the critic
-WEIGHT_DECAY = 0        # L2 weight decay
+WEIGHT_DECAY = 0      # L2 weight decay
+THETA = 0.15*5        # OUNoise Theta
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -133,10 +134,25 @@ class Agent():
         for target_param, local_param in zip(target_model.parameters(), local_model.parameters()):
             target_param.data.copy_(tau*local_param.data + (1.0-tau)*target_param.data)
 
+    def print(self):
+        print('BUFFER_SIZE {}'.format(BUFFER_SIZE))
+        print('BATCH_SIZE {}'.format(BATCH_SIZE))
+        print('GAMMA {}'.format(GAMMA))
+        print('TAU {}'.format(TAU))
+        print('LR_ACTOR {}'.format(LR_ACTOR))
+        print('LR_CRITIC {}'.format(LR_CRITIC))
+        print('WEIGHT_DECAY {}'.format(WEIGHT_DECAY))
+        print('noise.theta {}'.format(self.noise.theta))
+        print('fc1 {}'.format(self.actor_local.fc1))
+        print('bn1 {}'.format(self.actor_local.bn1))
+        print('fc2 {}'.format(self.actor_local.fc2))
+        print('fc3 {}'.format(self.actor_local.fc3))
+        print('fc4 {}'.format(self.actor_local.fc4))
+
 class OUNoise:
     """Ornstein-Uhlenbeck process."""
 
-    def __init__(self, size, seed, mu=0., theta=0.15*5, sigma=0.2):
+    def __init__(self, size, seed, mu=0., theta=THETA, sigma=0.2):
         """Initialize parameters and noise process."""
         self.mu = mu * np.ones(size)
         self.theta = theta
